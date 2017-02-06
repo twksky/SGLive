@@ -1,0 +1,18 @@
+//
+//  Macro.h
+//  SGLive
+//
+//  Created by twksky on 2017/2/4.
+//  Copyright © 2017年 twksky. All rights reserved.
+//
+
+#ifndef Macro_h
+#define Macro_h
+
+#import <UIKit/UIKit.h>
+#import <AFNetworking.h>
+#define SuanGuo3DesKey @ "WGGXhzydkj1SuanGuo"
+//#define kHostName        @ "www.suanguozhibo.com"
+#define kHostName        @ "t.xiehou360.com/LiveWebServer"
+#define RequestionGetLiveList       [NSString stringWithFormat: @ "http://%@/call.do?cmd=live.liveList", kHostName]
+#endif /* Macro_h */
