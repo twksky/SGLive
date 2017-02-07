@@ -11,7 +11,7 @@
 
 @interface NSData (Code)
 
-- (NSData *)tripleDES;
-- (NSData *)decodeTripleDES;
+//- (NSData *)tripleDES;
+//- (NSData *)decodeTripleDES;
 
 @end
