@@ -12,7 +12,7 @@
 #import <UIKit/UIKit.h>
 #import <AFNetworking.h>
 #define SuanGuo3DesKey @ "WGGXhzydkj1SuanGuo"
-//#define kHostName        @ "www.suanguozhibo.com"
-#define kHostName        @ "t.xiehou360.com/LiveWebServer"
+#define kHostName        @ "www.suanguozhibo.com"
+//#define kHostName        @ "t.xiehou360.com/LiveWebServer"
 #define RequestionGetLiveList       [NSString stringWithFormat: @ "http://%@/call.do?cmd=live.liveList", kHostName]
 #endif /* Macro_h */

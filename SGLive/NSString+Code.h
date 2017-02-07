@@ -12,23 +12,23 @@
 // #define IS_CH_SYMBOL(chr) ((int)(chr)>127)
 
 @interface NSString (Code)
-- (NSString *)md5;
-// 手机号码格式化
-- (NSString *)phoneNumFormat;
-// 是否有中文字符
-- (BOOL)haveChSymbol;
+//- (NSString *)md5;
+//// 手机号码格式化
+//- (NSString *)phoneNumFormat;
+//// 是否有中文字符
+//- (BOOL)haveChSymbol;
 
 - (NSString *)encryptString;
-- (NSString *)tripleDES;
-- (NSString *)tripleDESWithKey:(NSString *)key;
-- (NSString *)tripleDESWithKey:(NSString *)key compress:(BOOL)compress;
-- (NSString *)decodeTripleDES;
-- (NSString *)decodeTripleDESWithKey:(NSString *)key;
+//- (NSString *)tripleDES;
+//- (NSString *)tripleDESWithKey:(NSString *)key;
+//- (NSString *)tripleDESWithKey:(NSString *)key compress:(BOOL)compress;
+//- (NSString *)decodeTripleDES;
+//- (NSString *)decodeTripleDESWithKey:(NSString *)key;
 //- (NSData *)gzip;
-- (NSString *)urlEncode;
-- (NSString *)urlDecode;
-- (int)characterCount;
-- (BOOL)isEqualToStringCaseInsensitive:(NSString *)aString;
+//- (NSString *)urlEncode;
+//- (NSString *)urlDecode;
+//- (int)characterCount;
+//- (BOOL)isEqualToStringCaseInsensitive:(NSString *)aString;
 // 把键值数组字符串解析到字典中，形如a=1&b=2&c=3的字符串
-- (NSDictionary *)parametersWithSeparator:(NSString *)separator delimiter:(NSString *)delimiter;
+//- (NSDictionary *)parametersWithSeparator:(NSString *)separator delimiter:(NSString *)delimiter;
 @end

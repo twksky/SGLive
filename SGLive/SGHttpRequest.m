@@ -10,8 +10,6 @@
 
 @interface SGHttpRequest ()
 
-@property (nonatomic, strong) AFHTTPSessionManager *manager;
-
 @end
 
 @implementation SGHttpRequest
@@ -26,57 +24,28 @@ static SGHttpRequest *x = nil;
 //        manager.securityPolicy.allowInvalidCertificates = YES; // not recommended for production
         
         NSURL *url = [NSURL URLWithString:@""];
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
         
-        
-        [config setHTTPAdditionalHeaders:getRequestHeader()];
-        
-        
-        x = [[SGHttpRequest alloc] initWithBaseURL:url sessionConfiguration:config];
+        x = [[SGHttpRequest alloc] initWithBaseURL:url sessionConfiguration:nil];
         
         x.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json",@"text/plain", nil];
         x.requestSerializer = [AFJSONRequestSerializer serializer];
-        
+        x.responseSerializer = [AFHTTPResponseSerializer serializer];
     }
     
     return x;
 }
 
-NSMutableDictionary *getRequestHeader()
-{
-//    NSString *version = [SuanGuoVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
-    
-//    NSString *imei = [SGAppUtils getIDFAOrMac];
-    
-//    NSString *isBroken = nil;
-    
-//    if ([SGAppUtils isJailBrokeDevice]) {
-//        isBroken = @"2";
-//    } else {
-//        isBroken = @"1";
-//    }
-    
-//    NSMutableDictionary *httpHeader = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//                                       [SGUserInfoManager instance].uid ?[SGUserInfoManager instance].uid : @"", @"uid",
-//                                       [SGUserInfoManager instance].loginKey ?[SGUserInfoManager instance].loginKey : @"", @"loginKey",
-//                                       imei ? imei : @"", @"imei",
-//                                       @([SGUserInfoManager instance].userInfo.gender), @"gender",
-//                                       @([isBroken integerValue]), @"osType",
-//                                       @([version integerValue]), @"version",
-//                                       [[UIDevice currentDevice] systemVersion], @"mobileVersion",
-//                                       [SGChannelManager channelName], @"channel",
-//                                       [SGAppUtils deviceString], @"deviceModel",
-//                                       nil];
-    NSMutableDictionary *httpHeader = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       @(240), @"version",
-                                       nil];
-    return httpHeader;
-}
-
-
 - (void)asyncPostRequestWithEncrypt:(NSString *)url content:(NSMutableDictionary *)content successBlock:(void (^)(NSData *))successBlock failedBlock:(void (^)(NSError *))failedBlock{
     
-    [self POST:url parameters:content progress:^(NSProgress * _Nonnull uploadProgress) {
+    [self.requestSerializer setValue:[[self parseStatusMessage:[self getRequestHeaderWithEncrypt]] encryptString] forHTTPHeaderField:@"headKey"];
+    [self.requestSerializer setValue:@"ios" forHTTPHeaderField:@"ios"];
+    [self.requestSerializer setValue:@"" forHTTPHeaderField:@"Content-type"];
+
+    NSString *str = [self ObjectToJsonString:content];
+    
+//    NSData *bodyData = [[str encryptString] dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [self POST:url parameters:[str encryptString] progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
@@ -153,5 +122,150 @@ NSMutableDictionary *getRequestHeader()
     
     return statusMsg;
 }
+
+- (NSString *)ObjectToJsonString:(id)_object
+{
+    
+    NSData      *dataJson = [self ObjectToJsonData:_object];
+    NSString    *jsonStr = [self JsonDataToNSString:dataJson];
+    
+    return jsonStr;
+}
+
+- (NSData *)ObjectToJsonData:(id)_object
+{
+    
+    NSError *error = nil;
+    
+    if ([NSJSONSerialization isValidJSONObject:_object]) {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_object options:NSJSONWritingPrettyPrinted error:&error];
+        
+        if ((jsonData != nil) && (error == nil)) {
+            return jsonData;
+        } else {
+            NSLog(@"json error:%@", error);
+        }
+    }
+    
+    return nil;
+}
+
+- (NSString *)JsonDataToNSString:(NSData *)jsonData
+{
+    
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    if (jsonString != nil) {
+#if !__has_feature(objc_arc)
+        return [jsonString autorelease];
+        
+#else
+        return jsonString;
+#endif
+    } else {
+        return nil;
+    }
+    
+    return nil;
+}
+
+/**
+ *	@brief	设置请求头部信息
+ */
+- (NSMutableDictionary *)getRequestHeaderWithEncrypt
+{
+    /* http头部信息 */
+    
+    /*
+     *   String uid      (用户id)
+     *   String loginKey (loginKey)
+     *   String gender   (性别)
+     *   String osType   (系统类型)
+     *   String version  (版本)
+     *   String channel  (渠道)
+     *   String imei     (串号)
+     */
+    
+//    NSString *version = [SuanGuoVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
+    
+//    NSString *imei = [SGAppUtils getIDFAOrMac];
+    
+//    NSString *isBroken = nil;
+    
+//    if ([SGAppUtils isJailBrokeDevice]) {
+//        isBroken = @"2";
+//    } else {
+//        isBroken = @"1";
+//    }
+    
+    /*    NSInteger netWorkStatus = 0;    //未知网络 */
+    
+    /*
+     *    Reachability *r = [Reachability reachabilityWithHostName:@"www.baidu.com"];
+     *    switch ([r currentReachabilityStatus])
+     *    {
+     *        case NotReachable:// 没有网络连接
+     *            netWorkStatus = 6;
+     *            break;
+     *        case ReachableViaWWAN:// 使用3G网络
+     *            netWorkStatus = 5;
+     *            break;
+     *        case ReachableViaWiFi:// 使用WiFi网络
+     *            netWorkStatus = 1;
+     *            break;
+     *        default:
+     *            break;
+     *    }
+     */
+    
+    /*    NSString *uid = [[LoginInfoModel shareInstance] userId]; */
+    
+    NSMutableDictionary *httpHeader = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       @"1236568", @"uid",
+                                       @"", @"loginKey",
+                                       @"", @"imei",
+                                       @(1), @"gender",
+                                       @(1), @"osType",
+                                       @(240), @"version",
+                                       [[UIDevice currentDevice] systemVersion], @"mobileVersion",
+                                       @"suanguo", @"channel",
+                                       @"twksky", @"deviceModel",
+                                       nil];
+    
+//    [self.requestSerializer setValue:@"1236568" forHTTPHeaderField:@"uid"];
+//    [self.requestSerializer setValue:@"" forHTTPHeaderField:@"loginKey"];
+//    [self.requestSerializer setValue:@"" forHTTPHeaderField:@"imei"];
+//    [self.requestSerializer setValue:@"1" forHTTPHeaderField:@"gender"];
+//    [self.requestSerializer setValue:@"1" forHTTPHeaderField:@"osType"];
+//    [self.requestSerializer setValue:@"ios" forHTTPHeaderField:@"mobileVersion"];
+//    [self.requestSerializer setValue:@"suanguo" forHTTPHeaderField:@"channel"];
+//    [self.requestSerializer setValue:@"twksky" forHTTPHeaderField:@"deviceModel"];
+    
+    return httpHeader;
+}
+
+- (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString {
+    
+    if (jsonString == nil) {
+        
+        return nil;
+        
+    }
+    
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSError *err;
+    
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                         
+                                                        options:NSJSONReadingMutableContainers
+                         
+                                                          error:&err];
+    if(err) {
+        return nil;
+    }
+    return dic;
+}
+
 
 @end

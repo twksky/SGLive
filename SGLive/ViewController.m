@@ -31,12 +31,17 @@
     NSMutableDictionary *dictM = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                   @"1236568", @"uid",
                                   @1, @"type",
-                                  @1, @"pageIndex",
                                   nil];
     
     [[SGHttpRequest instance] asyncPostRequestWithEncrypt:RequestionGetLiveList content:dictM successBlock:^(NSData *data) {
         
+        NSDictionary *resultDict = [self JsonDataToObject:data];
+        
+        NSLog(@"%@",resultDict);
+        
     } failedBlock:^(NSError *error) {
+        
+        NSLog(@"");
         
     }];
     
@@ -45,6 +50,25 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (id)JsonDataToObject:(NSData *)jsonData
+{
+    
+    if ((jsonData == nil) || ([jsonData length] == 0)) {
+        
+        return nil;
+    }
+    
+    NSError *error = nil;
+    id      jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
+    
+    if ((jsonObject != nil) && (error == nil)) {
+        return jsonObject;
+    } else {
+        
+        return nil;
+    }
 }
 
 

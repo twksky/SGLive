@@ -1256,8 +1256,14 @@ typedef enum {
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
             [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         }
+        //修改的
+        if ([parameters isKindOfClass:[NSString class]]) {
+            [mutableRequest setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
+        }else{
 
-        [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
+            [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
+        }
+        //修改的
     }
 
     return mutableRequest;
