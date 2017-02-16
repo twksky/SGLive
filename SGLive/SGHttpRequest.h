@@ -16,6 +16,7 @@
 
 + (SGHttpRequest *)instance;
 
+- (void)setHttpHeaderValue:(NSString *)value forKey:(NSString *)key;
 /**
  *  异步网络请求
  */

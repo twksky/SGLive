@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SGLive/ViewController.m"
-            timestampString = "508132914.938331"
+            timestampString = "508147623.724111"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
             landmarkName = "-btnclick:"
             landmarkType = "7">
          </BreakpointContent>
